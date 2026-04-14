@@ -21,7 +21,7 @@
         :root {
             --ink: #1a1a1a;
             --paper: #f5f0e8;
-            --accent: #c0392b;
+            --accent: #2c6fbb;
             --muted: #6b6560;
             --card: #fffdf8;
             --border: #d8d0c4;
@@ -74,6 +74,11 @@
             z-index: 100;
         }
 
+        #countdown, #countdown2 {
+            font-family: 'DM Mono', monospace;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: 0.03em;
+        }
         #countdown {
             background: rgba(255,255,255,0.2);
             padding: 3px 12px;
@@ -137,7 +142,7 @@
             align-items: center;
             gap: 20px;
             background: #fff8ee;
-            border: 2px solid #e67e22;
+            border: 2px solid #5a9bd5;
             padding: 16px 32px;
             margin-bottom: 28px;
             flex-wrap: wrap;
@@ -401,7 +406,7 @@
 <!-- ── 限时倒计时横幅 ── -->
 <div class="countdown-banner">
     <span>🔥 限时1折 · 4月30日截止</span>
-    <span id="countdown">计算中...</span>
+    <span id="countdown">--天 --:--:--</span>
     <span>原价¥29 → 现在只要 <strong>¥2.9</strong></span>
 </div>
 
@@ -495,7 +500,7 @@
     <!-- ── 购买区 ── -->
     <div class="buy-section">
         <div class="buy-label">限时优惠 · 4月30日截止</div>
-        <div class="buy-deadline">⏰ 距截止还剩 <span id="countdown2">计算中...</span></div>
+        <div class="buy-deadline">⏰ 距截止还剩 <span id="countdown2">--天 --:--:--</span></div>
 
         <div class="buy-price-row">
             <span class="buy-original">¥29</span>
