@@ -523,7 +523,7 @@
     <div class="faq">
         <div class="faq-header">常见问题 FAQ</div>
         <div class="faq-item">
-            <button class="faq-q" onclick="toggleFaq(this)">
+            <button class="faq-q">
                 macOS 提示「无法验证开发者」，是病毒吗？
                 <span class="arrow">▶</span>
             </button>
@@ -532,7 +532,7 @@
             </div>
         </div>
         <div class="faq-item">
-            <button class="faq-q" onclick="toggleFaq(this)">
+            <button class="faq-q">
                 一个激活码可以用在几台设备？可以换设备吗？
                 <span class="arrow">▶</span>
             </button>
@@ -541,7 +541,7 @@
             </div>
         </div>
         <div class="faq-item">
-            <button class="faq-q" onclick="toggleFaq(this)">
+            <button class="faq-q">
                 支持哪些 macOS 版本？
                 <span class="arrow">▶</span>
             </button>
@@ -550,7 +550,7 @@
             </div>
         </div>
         <div class="faq-item">
-            <button class="faq-q" onclick="toggleFaq(this)">
+            <button class="faq-q">
                 购买后怎么收到激活码？
                 <span class="arrow">▶</span>
             </button>
@@ -559,7 +559,7 @@
             </div>
         </div>
         <div class="faq-item">
-            <button class="faq-q" onclick="toggleFaq(this)">
+            <button class="faq-q">
                 4月30日后价格会涨回¥29吗？
                 <span class="arrow">▶</span>
             </button>
@@ -607,19 +607,21 @@
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
-    // FAQ
-    function toggleFaq(btn) {
-        const answer = btn.nextElementSibling;
-        const isOpen = btn.classList.contains('open');
-        document.querySelectorAll('.faq-q').forEach(b => {
-            b.classList.remove('open');
-            b.nextElementSibling.classList.remove('show');
+    // FAQ — 事件委托，不依赖内联 onclick
+    document.querySelectorAll('.faq-q').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const answer = btn.nextElementSibling;
+            const isOpen = btn.classList.contains('open');
+            document.querySelectorAll('.faq-q').forEach(b => {
+                b.classList.remove('open');
+                b.nextElementSibling.classList.remove('show');
+            });
+            if (!isOpen) {
+                btn.classList.add('open');
+                answer.classList.add('show');
+            }
         });
-        if (!isOpen) {
-            btn.classList.add('open');
-            answer.classList.add('show');
-        }
-    }
+    });
 </script>
 </body>
 </html>
