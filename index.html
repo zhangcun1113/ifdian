@@ -357,23 +357,24 @@
         .faq-item { border-bottom: 1px solid var(--border); }
         .faq-item:last-child { border-bottom: none; }
 
-        .faq-q {
-            width: 100%; background: none; border: none; padding: 18px 24px;
-            text-align: left; font-family: 'Noto Serif SC', serif; font-size: 0.95rem;
-            font-weight: 700; cursor: pointer; display: flex; justify-content: space-between;
-            align-items: center; color: var(--ink); transition: background 0.15s;
+        .faq-item summary {
+            padding: 18px 24px; font-family: 'Noto Serif SC', serif; font-size: 0.95rem;
+            font-weight: 700; cursor: pointer; color: var(--ink); transition: background 0.15s;
+            list-style: none; display: flex; justify-content: space-between; align-items: center;
         }
-
-        .faq-q:hover { background: #f5f0e0; }
-        .faq-q .arrow { font-family: 'DM Mono', monospace; font-size: 1rem; transition: transform 0.2s; color: var(--accent); }
-        .faq-q.open .arrow { transform: rotate(90deg); }
-
-        .faq-a {
-            display: none; padding: 0 24px 18px;
-            font-size: 0.9rem; color: var(--muted); line-height: 1.7;
-            border-top: 1px dashed var(--border);
+        .faq-item summary::-webkit-details-marker { display: none; }
+        .faq-item summary::marker { display: none; content: ''; }
+        .faq-item summary:hover { background: #f5f0e0; }
+        .faq-item summary .arrow {
+            font-family: 'DM Mono', monospace; font-size: 1rem;
+            transition: transform 0.25s; color: var(--accent);
         }
-        .faq-a.show { display: block; }
+        .faq-item[open] summary .arrow { transform: rotate(90deg); }
+
+        .faq-item .faq-a {
+            padding: 0 24px 18px; font-size: 0.9rem; color: var(--muted);
+            line-height: 1.7; border-top: 1px dashed var(--border);
+        }
 
         /* ── Footer ── */
         .footer { text-align: center; padding-top: 32px; border-top: 1px solid var(--border); }
@@ -522,51 +523,26 @@
     <!-- ── FAQ ── -->
     <div class="faq">
         <div class="faq-header">常见问题 FAQ</div>
-        <div class="faq-item">
-            <button class="faq-q">
-                macOS 提示「无法验证开发者」，是病毒吗？
-                <span class="arrow">▶</span>
-            </button>
-            <div class="faq-a">
-                不是病毒。这是因为 app 没有购买苹果开发者证书（$99/年），macOS 会对所有未签名软件显示此提示。按安装教程：右键→打开→仍要打开，即可正常运行。app 完全本地运行，不收集任何数据。
-            </div>
-        </div>
-        <div class="faq-item">
-            <button class="faq-q">
-                一个激活码可以用在几台设备？可以换设备吗？
-                <span class="arrow">▶</span>
-            </button>
-            <div class="faq-a">
-                一个激活码支持 1 台设备激活。若需换设备，请在爱发电私信作者说明情况，可协助处理。
-            </div>
-        </div>
-        <div class="faq-item">
-            <button class="faq-q">
-                支持哪些 macOS 版本？
-                <span class="arrow">▶</span>
-            </button>
-            <div class="faq-a">
-                支持 macOS 11 Big Sur 及以上（含 Ventura、Sonoma、Sequoia），Intel 和 Apple Silicon（M 系列）均兼容。
-            </div>
-        </div>
-        <div class="faq-item">
-            <button class="faq-q">
-                购买后怎么收到激活码？
-                <span class="arrow">▶</span>
-            </button>
-            <div class="faq-a">
-                在爱发电完成支付后，激活码会显示在订单详情页，同时爱发电会发送通知。打开 SitReminder → 输入激活码 → 点击激活，立即解锁。
-            </div>
-        </div>
-        <div class="faq-item">
-            <button class="faq-q">
-                4月30日后价格会涨回¥29吗？
-                <span class="arrow">▶</span>
-            </button>
-            <div class="faq-a">
-                是的，4月30日后恢复原价¥29。现在购买锁定¥2.9，后续版本更新完全免费，和原价用户享受完全相同的功能。
-            </div>
-        </div>
+        <details class="faq-item">
+            <summary>macOS 提示「无法验证开发者」，是病毒吗？<span class="arrow">▶</span></summary>
+            <div class="faq-a">不是病毒。这是因为 app 没有购买苹果开发者证书（$99/年），macOS 会对所有未签名软件显示此提示。按安装教程：右键→打开→仍要打开，即可正常运行。app 完全本地运行，不收集任何数据。</div>
+        </details>
+        <details class="faq-item">
+            <summary>一个激活码可以用在几台设备？可以换设备吗？<span class="arrow">▶</span></summary>
+            <div class="faq-a">一个激活码支持 1 台设备激活。若需换设备，请在爱发电私信作者说明情况，可协助处理。</div>
+        </details>
+        <details class="faq-item">
+            <summary>支持哪些 macOS 版本？<span class="arrow">▶</span></summary>
+            <div class="faq-a">支持 macOS 11 Big Sur 及以上（含 Ventura、Sonoma、Sequoia），Intel 和 Apple Silicon（M 系列）均兼容。</div>
+        </details>
+        <details class="faq-item">
+            <summary>购买后怎么收到激活码？<span class="arrow">▶</span></summary>
+            <div class="faq-a">在爱发电完成支付后，激活码会显示在订单详情页，同时爱发电会发送通知。打开 SitReminder → 输入激活码 → 点击激活，立即解锁。</div>
+        </details>
+        <details class="faq-item">
+            <summary>4月30日后价格会涨回¥29吗？<span class="arrow">▶</span></summary>
+            <div class="faq-a">是的，4月30日后恢复原价¥29。现在购买锁定¥2.9，后续版本更新完全免费，和原价用户享受完全相同的功能。</div>
+        </details>
     </div>
 
     <!-- ── Footer ── */
@@ -607,21 +583,6 @@
     updateCountdown();
     setInterval(updateCountdown, 1000);
 
-    // FAQ — 事件委托，不依赖内联 onclick
-    document.querySelectorAll('.faq-q').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const answer = btn.nextElementSibling;
-            const isOpen = btn.classList.contains('open');
-            document.querySelectorAll('.faq-q').forEach(b => {
-                b.classList.remove('open');
-                b.nextElementSibling.classList.remove('show');
-            });
-            if (!isOpen) {
-                btn.classList.add('open');
-                answer.classList.add('show');
-            }
-        });
-    });
 </script>
 </body>
 </html>
