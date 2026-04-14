@@ -3,422 +3,623 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>StandUp · 菜单栏久坐提醒工具</title>
+    <title>SitReminder · 菜单栏久坐提醒工具</title>
+
+    <meta name="description" content="SitReminder · macOS 菜单栏久坐提醒工具，实时倒计时，一键暂停，买断制 ¥29，4月30日前限时1折仅¥2.9">
+    <meta name="keywords" content="久坐提醒,mac菜单栏,站立提醒,番茄钟,SitReminder,腰椎健康">
+    <meta name="author" content="SitReminder">
+    <meta property="og:title" content="SitReminder · 久坐提醒工具 限时¥2.9">
+    <meta property="og:description" content="菜单栏实时倒计时，不打扰，不复杂。原价¥29，4月30日前1折仅¥2.9，买断永久用。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://zhangcun1113.github.io/ifdian/">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --ink: #1a1a1a;
+            --paper: #f5f0e8;
+            --accent: #c0392b;
+            --muted: #6b6560;
+            --card: #fffdf8;
+            --border: #d8d0c4;
+            --win: #0063b1;
         }
 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: 'Noto Serif SC', 'STSong', serif;
+            background: var(--paper);
+            color: var(--ink);
             min-height: 100vh;
-            padding: 40px 20px;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%23a09080' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
         }
 
         .container {
-            max-width: 1100px;
+            max-width: 960px;
             margin: 0 auto;
+            padding: 48px 24px 80px;
+            position: relative;
+            z-index: 1;
         }
 
-        /* 主卡片 */
-        .hero {
-            background: rgba(255,255,255,0.95);
-            border-radius: 32px;
-            padding: 50px 40px;
+        /* ── 倒计时横幅 ── */
+        .countdown-banner {
+            background: var(--accent);
+            color: #fff;
             text-align: center;
-            box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);
-            margin-bottom: 30px;
+            padding: 12px 20px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.85rem;
+            letter-spacing: 0.06em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 16px;
+            flex-wrap: wrap;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        #countdown {
+            background: rgba(255,255,255,0.2);
+            padding: 3px 12px;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+        }
+
+        /* ── HERO ── */
+        .hero {
+            text-align: center;
+            padding: 64px 32px 48px;
+            border: 2px solid var(--ink);
+            background: var(--card);
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            inset: 4px;
+            border: 1px solid var(--border);
+            pointer-events: none;
+        }
+
+        .stamp {
+            display: inline-flex;
+            gap: 8px;
+            border: 1.5px solid var(--ink);
+            padding: 4px 14px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.75rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            margin-bottom: 28px;
+            color: var(--muted);
         }
 
         h1 {
-            font-size: 3rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 12px;
-        }
-
-        .tagline {
-            font-size: 1.3rem;
-            color: #4a5568;
+            font-size: clamp(4rem, 12vw, 8rem);
+            font-weight: 900;
+            letter-spacing: -0.03em;
+            line-height: 0.9;
             margin-bottom: 20px;
-            font-weight: 500;
         }
 
-        .badge {
+        h1 span { color: var(--accent); }
+
+        .tagline { font-size: 1.15rem; color: var(--muted); margin-bottom: 10px; }
+
+        .sub-tagline {
+            font-family: 'DM Mono', monospace;
+            font-size: 0.8rem;
+            letter-spacing: 0.15em;
+            color: var(--accent);
+            text-transform: uppercase;
+            margin-bottom: 36px;
+        }
+
+        .price-hero {
             display: inline-flex;
-            gap: 12px;
-            justify-content: center;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .badge span {
-            background: #e2e8f0;
-            padding: 6px 14px;
-            border-radius: 30px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            color: #2d3748;
-        }
-
-        .download-buttons {
-            display: flex;
+            align-items: center;
             gap: 20px;
-            justify-content: center;
-            margin: 30px 0;
+            background: #fff8ee;
+            border: 2px solid #e67e22;
+            padding: 16px 32px;
+            margin-bottom: 28px;
             flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .price-original {
+            font-family: 'DM Mono', monospace;
+            font-size: 1.2rem;
+            color: var(--muted);
+            text-decoration: line-through;
+        }
+
+        .price-now {
+            font-size: 2.8rem;
+            font-weight: 900;
+            color: var(--accent);
+            line-height: 1;
+        }
+
+        .price-now sup { font-size: 1.2rem; vertical-align: super; }
+
+        .price-badge {
+            background: var(--accent);
+            color: #fff;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 5px 12px;
+            letter-spacing: 0.08em;
+        }
+
+        .download-row {
+            display: flex;
+            gap: 14px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 14px;
         }
 
         .btn {
             display: inline-flex;
             align-items: center;
-            gap: 10px;
-            padding: 14px 32px;
-            border-radius: 48px;
-            font-weight: 600;
-            font-size: 1rem;
+            gap: 8px;
+            padding: 12px 28px;
+            font-family: 'DM Mono', monospace;
+            font-size: 0.9rem;
+            font-weight: 500;
             text-decoration: none;
-            transition: all 0.2s ease;
-            border: none;
+            border: 2px solid var(--ink);
             cursor: pointer;
+            transition: all 0.15s ease;
+            letter-spacing: 0.02em;
+            position: relative;
+            background: none;
         }
 
-        .btn-primary {
-            background: #2d3748;
-            color: white;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        .btn::after {
+            content: '';
+            position: absolute;
+            bottom: -4px; right: -4px;
+            width: 100%; height: 100%;
+            border: 2px solid var(--ink);
+            z-index: -1;
+            transition: all 0.15s ease;
         }
 
-        .btn-primary:hover {
-            background: #1a202c;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-        }
+        .btn:hover { transform: translate(-2px, -2px); }
+        .btn:hover::after { bottom: -6px; right: -6px; }
 
-        .btn-mac {
-            background: #000000;
-            color: white;
-        }
-
-        .btn-mac:hover {
-            background: #1a1a1a;
-            transform: translateY(-2px);
-        }
-
-        .btn-win {
-            background: #0078d4;
-            color: white;
-        }
-
-        .btn-win:hover {
-            background: #106ebe;
-            transform: translateY(-2px);
-        }
+        .btn-mac { background: var(--ink); color: #fff; }
+        .btn-win { background: #888; color: #fff; border-color: #888; cursor: default; }
+        .btn-win::after { border-color: #888; }
+        .btn-win:hover { transform: none; }
+        .btn-win:hover::after { bottom: -4px; right: -4px; }
 
         .btn-buy {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 14px 36px;
-            font-size: 1.1rem;
-            box-shadow: 0 8px 20px rgba(102,126,234,0.3);
+            background: var(--accent); color: #fff;
+            border-color: var(--accent);
+            padding: 16px 48px; font-size: 1.05rem;
+        }
+        .btn-buy::after { border-color: var(--accent); }
+
+        .hero-note {
+            font-size: 0.78rem; color: var(--muted); margin-top: 12px;
+            font-family: 'DM Mono', monospace;
         }
 
-        .btn-buy:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 12px 28px rgba(102,126,234,0.4);
+        /* ── 安装说明 ── */
+        .install-section {
+            border: 2px solid var(--ink);
+            border-top: none;
+            background: #fff8ee;
+            padding: 28px 32px;
+            margin-bottom: 40px;
         }
 
-        /* 功能网格 */
+        .install-section h3 { font-size: 1rem; font-weight: 700; margin-bottom: 14px; }
+        .install-steps { display: flex; flex-wrap: wrap; }
+
+        .step {
+            display: flex; align-items: flex-start; gap: 10px;
+            flex: 1; min-width: 200px; padding-right: 16px; margin-bottom: 8px;
+        }
+
+        .step-num {
+            width: 28px; height: 28px; min-width: 28px;
+            border: 2px solid var(--ink);
+            display: flex; align-items: center; justify-content: center;
+            font-family: 'DM Mono', monospace; font-size: 0.8rem; font-weight: 700; margin-top: 2px;
+        }
+
+        .step p { font-size: 0.88rem; line-height: 1.5; }
+        .step strong { color: var(--accent); }
+
+        /* ── 功能 ── */
+        .section-title {
+            font-family: 'DM Mono', monospace; font-size: 0.75rem;
+            letter-spacing: 0.2em; text-transform: uppercase; color: var(--muted);
+            margin-bottom: 20px; display: flex; align-items: center; gap: 12px;
+        }
+        .section-title::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
         .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 24px;
-            margin: 40px 0;
+            display: grid; grid-template-columns: repeat(2, 1fr);
+            gap: 0; border: 2px solid var(--ink); margin-bottom: 40px;
         }
 
         .feature-card {
-            background: white;
-            border-radius: 24px;
-            padding: 24px;
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08);
-            transition: transform 0.2s;
+            padding: 28px 24px;
+            border-right: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            background: var(--card); transition: background 0.2s;
         }
 
-        .feature-card:hover {
-            transform: translateY(-4px);
+        .feature-card:hover { background: #fff8ee; }
+        .feature-card:nth-child(2n) { border-right: none; }
+        .feature-card:nth-child(5),
+        .feature-card:nth-child(6) { border-bottom: none; }
+
+        .feature-icon { font-size: 2rem; margin-bottom: 12px; display: block; }
+        .feature-card h3 { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
+        .feature-card p { font-size: 0.88rem; color: var(--muted); line-height: 1.6; }
+        .dev-badge {
+            display: inline-block; font-size: 0.65rem; font-weight: 600;
+            padding: 2px 8px; border-radius: 4px; margin-left: 6px;
+            background: #fff3cd; color: #856404; vertical-align: middle;
+            letter-spacing: 0.03em;
         }
 
-        .feature-icon {
-            font-size: 2.5rem;
-            margin-bottom: 16px;
-        }
-
-        .feature-card h3 {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 10px;
-            color: #1a202c;
-        }
-
-        .feature-card p {
-            color: #4a5568;
-            line-height: 1.5;
-        }
-
-        /* 对比表格 */
-        .compare {
-            background: white;
-            border-radius: 32px;
-            padding: 30px;
-            margin: 40px 0;
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.08);
-        }
-
-        .compare h2 {
+        /* ── 购买区 ── */
+        .buy-section {
+            border: 2px solid var(--accent);
+            background: var(--card);
+            padding: 48px 32px;
             text-align: center;
-            margin-bottom: 24px;
-            font-size: 1.6rem;
+            margin-bottom: 40px;
+            position: relative;
         }
 
-        .compare-table {
-            width: 100%;
-            border-collapse: collapse;
+        .buy-label {
+            position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+            background: var(--accent); color: #fff;
+            font-family: 'DM Mono', monospace; font-size: 0.72rem;
+            letter-spacing: 0.15em; text-transform: uppercase;
+            padding: 4px 20px; white-space: nowrap;
         }
 
-        .compare-table th,
-        .compare-table td {
-            padding: 14px 16px;
-            text-align: left;
-            border-bottom: 1px solid #e2e8f0;
+        .buy-deadline {
+            font-family: 'DM Mono', monospace; font-size: 0.82rem;
+            color: var(--accent); letter-spacing: 0.1em; margin-bottom: 20px;
         }
 
-        .compare-table th {
-            background: #f7fafc;
-            font-weight: 600;
-            color: #2d3748;
+        .buy-price-row {
+            display: flex; align-items: center; justify-content: center;
+            gap: 20px; margin-bottom: 8px; flex-wrap: wrap;
         }
 
-        .compare-table td:first-child,
-        .compare-table th:first-child {
-            font-weight: 600;
+        .buy-original {
+            font-family: 'DM Mono', monospace; font-size: 1.6rem;
+            color: #bbb; text-decoration: line-through;
         }
 
-        .check {
-            color: #48bb78;
-            font-weight: bold;
+        .buy-now {
+            font-size: 5rem; font-weight: 900; color: var(--accent); line-height: 1;
+        }
+        .buy-now sup { font-size: 2rem; vertical-align: super; }
+
+        .buy-desc {
+            font-family: 'DM Mono', monospace; font-size: 0.78rem;
+            color: var(--muted); letter-spacing: 0.1em; margin-bottom: 6px;
         }
 
-        .pro {
-            background: #fef5e7;
+        .buy-note { font-size: 0.88rem; color: var(--muted); margin-bottom: 28px; }
+
+        .buy-steps {
+            display: flex; justify-content: center;
+            gap: 0; margin-top: 24px; flex-wrap: wrap; align-items: center;
         }
 
-        .price-box {
-            background: linear-gradient(135deg, #fef5e7 0%, #fff9f0 100%);
-            border-radius: 24px;
-            padding: 30px;
-            text-align: center;
-            margin: 30px 0;
+        .buy-step {
+            font-family: 'DM Mono', monospace; font-size: 0.78rem;
+            color: var(--muted); letter-spacing: 0.05em;
         }
 
-        .price {
-            font-size: 2.8rem;
-            font-weight: 800;
-            color: #2d3748;
+        .buy-step-arrow { color: var(--border); font-size: 1.2rem; padding: 0 10px; }
+
+        /* ── FAQ ── */
+        .faq { border: 2px solid var(--ink); background: var(--card); margin-bottom: 40px; overflow: hidden; }
+
+        .faq-header {
+            background: var(--ink); color: #fff; padding: 16px 24px;
+            font-family: 'DM Mono', monospace; font-size: 0.8rem;
+            letter-spacing: 0.15em; text-transform: uppercase;
         }
 
-        .price-note {
-            color: #718096;
-            margin-top: 8px;
+        .faq-item { border-bottom: 1px solid var(--border); }
+        .faq-item:last-child { border-bottom: none; }
+
+        .faq-q {
+            width: 100%; background: none; border: none; padding: 18px 24px;
+            text-align: left; font-family: 'Noto Serif SC', serif; font-size: 0.95rem;
+            font-weight: 700; cursor: pointer; display: flex; justify-content: space-between;
+            align-items: center; color: var(--ink); transition: background 0.15s;
         }
 
-        /* 页脚 */
-        .footer {
-            text-align: center;
-            color: rgba(255,255,255,0.8);
-            font-size: 0.85rem;
-            margin-top: 40px;
-        }
+        .faq-q:hover { background: #f5f0e0; }
+        .faq-q .arrow { font-family: 'DM Mono', monospace; font-size: 1rem; transition: transform 0.2s; color: var(--accent); }
+        .faq-q.open .arrow { transform: rotate(90deg); }
 
-        .footer a {
-            color: white;
-            text-decoration: underline;
+        .faq-a {
+            display: none; padding: 0 24px 18px;
+            font-size: 0.9rem; color: var(--muted); line-height: 1.7;
+            border-top: 1px dashed var(--border);
         }
+        .faq-a.show { display: block; }
 
+        /* ── Footer ── */
+        .footer { text-align: center; padding-top: 32px; border-top: 1px solid var(--border); }
+        .footer p { font-family: 'DM Mono', monospace; font-size: 0.75rem; color: var(--muted); letter-spacing: 0.05em; line-height: 2; }
+        .footer a { color: var(--ink); text-decoration: underline; text-underline-offset: 3px; }
+
+        /* ── 响应式 ── */
         @media (max-width: 640px) {
-            .hero {
-                padding: 30px 20px;
-            }
-            h1 {
-                font-size: 2rem;
-            }
-            .tagline {
-                font-size: 1rem;
-            }
+            h1 { font-size: 4rem; }
+            .features-grid { grid-template-columns: 1fr; }
+            .feature-card:nth-child(n) { border-right: none; border-bottom: 1px solid var(--border); }
+            .feature-card:last-child { border-bottom: none; }
+            .install-steps { flex-direction: column; gap: 12px; }
+            .buy-now { font-size: 3.5rem; }
+            .hero { padding: 40px 20px 32px; }
+            .buy-steps { flex-direction: column; align-items: center; gap: 4px; }
+            .buy-step-arrow { transform: rotate(90deg); }
+            .countdown-banner { font-size: 0.75rem; gap: 8px; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="hero">
-            <div class="badge">
-                <span>🍎 macOS</span>
-                <span>🪟 Windows</span>
-                <span>📦 菜单栏常驻</span>
-            </div>
-            <h1>StandUp</h1>
-            <div class="tagline">
-                一个小巧的菜单栏久坐提醒工具
-            </div>
-            <p style="color: #4a5568; max-width: 500px; margin: 0 auto;">
-                不打扰 · 不复杂 · 默默守护你的腰椎
-            </p>
 
-            <div class="download-buttons">
-                <a href="#" class="btn btn-mac" id="macBtn">🍎 下载 macOS 版</a>
-                <a href="#" class="btn btn-win" id="winBtn">🪟 下载 Windows 版</a>
-            </div>
+<!-- ── 限时倒计时横幅 ── -->
+<div class="countdown-banner">
+    <span>🔥 限时1折 · 4月30日截止</span>
+    <span id="countdown">计算中...</span>
+    <span>原价¥29 → 现在只要 <strong>¥2.9</strong></span>
+</div>
 
-            <div class="download-buttons">
-                <a href="https://ifdian.net/item/3ba6e60437b311f18a1552540025c377" class="btn btn-buy" target="_blank" id="buyBtn">
-                    💳 购买激活码 · 解锁专业版 ¥29 限时1折
-                </a>
-            </div>
-            <p style="font-size: 0.85rem; color: #718096; margin-top: 16px;">
-                免费版永久可用 · 专业版一次购买，永久更新
-            </p>
+<div class="container">
+
+    <!-- ── HERO ── -->
+    <div class="hero">
+        <div class="stamp">🍎 macOS v1.0.6 &nbsp;·&nbsp; 🪟 Windows 开发中</div>
+        <h1>Stand<span>Up</span></h1>
+        <div class="tagline">一个小巧的菜单栏久坐提醒工具</div>
+        <div class="sub-tagline">不打扰 · 不复杂 · 默默守护你的腰椎</div>
+
+        <div class="price-hero">
+            <span class="price-original">¥29</span>
+            <span class="price-now"><sup>¥</sup>2.9</span>
+            <span class="price-badge">4月30日截止</span>
         </div>
 
-        <!-- 功能列表 -->
-        <div class="features-grid">
-            <div class="feature-card">
-                <div class="feature-icon">⏱️</div>
-                <h3>菜单栏实时倒计时</h3>
-                <p>直接在菜单栏/系统托盘显示剩余时间，一眼就知道还有多久该起来走走</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">⚙️</div>
-                <h3>完全自定义间隔</h3>
-                <p>支持 1-180 分钟自由调节，适应不同工作节奏（番茄钟、深度工作均可）</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">⏸️</div>
-                <h3>暂停 / 恢复 / 立即提醒</h3>
-                <p>开会、专注时一键暂停，忙完后恢复计时；想马上起身？点“立即提醒”</p>
-            </div>
-            <div class="feature-card">
-                <div class="feature-icon">🪟</div>
-                <h3>悬浮倒计时窗口</h3>
-                <p>可拖动的透明小窗，放在屏幕角落，随时可见倒计时，不遮挡工作区</p>
-            </div>
+        <div class="download-row">
+            <a href="https://github.com/zhangcun1113/ifdian/raw/main/SitReminder_v1.0.6.dmg"
+               class="btn btn-mac">🍎 下载 macOS 版 v1.0.6</a>
+            <a class="btn btn-win">🪟 Windows 开发中...</a>
         </div>
-
-        <!-- 对比表格 -->
-        <div class="compare">
-            <h2>📊 免费版 vs 专业版</h2>
-            <table class="compare-table">
-                <thead>
-                    <tr>
-                        <th>功能</th>
-                        <th>免费版</th>
-                        <th>专业版</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>菜单栏倒计时</td>
-                        <td class="check">✅</td>
-                        <td class="check">✅</td>
-                    </tr>
-                    <tr>
-                        <td>自定义提醒间隔</td>
-                        <td>30/60 分钟固定</td>
-                        <td class="check">✅ 1-180 分钟任意</td>
-                    </tr>
-                    <tr>
-                        <td>暂停/恢复/立即提醒</td>
-                        <td class="check">✅</td>
-                        <td class="check">✅</td>
-                    </tr>
-                    <tr>
-                        <td>悬浮倒计时窗口</td>
-                        <td class="check">✅</td>
-                        <td class="check">✅</td>
-                    </tr>
-                    <tr>
-                        <td>白名单模式（不打扰）</td>
-                        <td>❌</td>
-                        <td class="check">✅</td>
-                    </tr>
-                    <tr>
-                        <td>久坐数据统计</td>
-                        <td>❌</td>
-                        <td class="check">✅</td>
-                    </tr>
-                    <tr>
-                        <td>多设备同步设置</td>
-                        <td>❌</td>
-                        <td class="check">✅</td>
-                    </tr>
-                    <tr>
-                        <td>广告 / 推广</td>
-                        <td>极简无广告</td>
-                        <td>完全纯净</td>
-                    </tr>
-                </tbody>
-            </table>
+        <div class="download-row">
+            <a href="https://ifdian.net/item/a41c6c2c37d111f1b52d52540025c377"
+               class="btn btn-buy" target="_blank" rel="noopener">
+                💳 立即购买激活码 · ¥2.9
+            </a>
         </div>
+        <p class="hero-note">买断制 · 一次购买永久使用 · 支持 1 台设备</p>
+    </div>
 
-        <!-- 价格说明 -->
-        <div class="price-box">
-            <div class="price">¥29</div>
-            <div class="price-note">永久买断 · 一次购买，Windows + macOS 双平台通用</div>
-            <div style="margin-top: 16px; font-size: 0.9rem; color: #718096;">
-                购买后您将收到激活码，在软件内输入即可永久解锁专业版
+    <!-- ── 安装教程 ── -->
+    <div class="install-section">
+        <h3>📖 macOS 安装方法 <span style="font-weight:400;color:var(--muted);font-size:0.85rem;">（需手动放行，非病毒）</span></h3>
+        <div class="install-steps">
+            <div class="step">
+                <div class="step-num">1</div>
+                <p>下载 <strong>.dmg</strong>，拖入「应用程序」文件夹</p>
             </div>
-        </div>
-
-        <div class="footer">
-            <p>© 2025 StandUp · 久坐提醒工具 | <a href="#">隐私政策</a> | <a href="#">常见问题</a></p>
-            <p style="margin-top: 8px;">支持 macOS 菜单栏 & Windows 系统托盘 · 极简设计，无后台驻留负担</p>
+            <div class="step">
+                <div class="step-num">2</div>
+                <p><strong>右键点击</strong> SitReminder → 选「打开」</p>
+            </div>
+            <div class="step">
+                <div class="step-num">3</div>
+                <p>弹窗点击<strong>「仍要打开」</strong></p>
+            </div>
+            <div class="step">
+                <div class="step-num">4</div>
+                <p>输入激活码，<strong>立即解锁全部功能</strong></p>
+            </div>
         </div>
     </div>
 
-    <script>
-        // 这里后面替换成你的真实下载链接
-        // 目前是 # 占位，等你在 GitHub Releases 上传好安装包后，把下面的链接替换掉即可
-        
-        // macOS 下载链接（示例，需要你替换）
-        // const macDownloadUrl = "https://github.com/你的用户名/你的仓库名/releases/download/v1.0.0/StandUp-mac.dmg";
-        // Windows 下载链接
-        // const winDownloadUrl = "https://github.com/你的用户名/你的仓库名/releases/download/v1.0.0/StandUp-Setup.exe";
-        
-        // 爱发电购买链接（务必替换成你的真实商品链接）
-        const buyUrl = "https://ifdian.net/item/3ba6e60437b311f18a1552540025c377";
-        
-        // 临时占位，后续替换
-        document.getElementById("macBtn").addEventListener("click", function(e) {
-            e.preventDefault();
-            alert("macOS 版即将发布，敬请期待！\n（替换成真实下载链接后此提示会消失）");
+    <!-- ── 功能 ── -->
+    <div class="section-title">全部功能</div>
+    <div class="features-grid">
+        <div class="feature-card">
+            <span class="feature-icon">⏱️</span>
+            <h3>菜单栏实时倒计时</h3>
+            <p>直接在菜单栏显示剩余时间，一眼就知道还有多久该起来走走</p>
+        </div>
+        <div class="feature-card">
+            <span class="feature-icon">⚙️</span>
+            <h3>自定义久坐 / 休息间隔</h3>
+            <p>久坐提醒 1–180 分钟、休息间隔 1–30 分钟，自由组合适应你的节奏</p>
+        </div>
+        <div class="feature-card">
+            <span class="feature-icon">⏸️</span>
+            <h3>暂停 / 恢复 / 立即提醒</h3>
+            <p>开会专注时一键暂停，忙完恢复；想马上起身点「立即提醒」</p>
+        </div>
+        <div class="feature-card">
+            <span class="feature-icon">🪟</span>
+            <h3>悬浮倒计时窗口</h3>
+            <p>可拖动的透明小窗，放在屏幕角落随时可见，不遮挡工作区</p>
+        </div>
+        <div class="feature-card">
+            <span class="feature-icon">🚫</span>
+            <h3>白名单模式<span class="dev-badge">开发中</span></h3>
+            <p>设置不打扰时段，开会演示时自动暂停提醒，结束后自动恢复</p>
+        </div>
+        <div class="feature-card">
+            <span class="feature-icon">📊</span>
+            <h3>久坐数据统计<span class="dev-badge">开发中</span></h3>
+            <p>记录每天站立次数和久坐时长，用数据看见自己的健康习惯</p>
+        </div>
+    </div>
+
+    <!-- ── 购买区 ── -->
+    <div class="buy-section">
+        <div class="buy-label">限时优惠 · 4月30日截止</div>
+        <div class="buy-deadline">⏰ 距截止还剩 <span id="countdown2">计算中...</span></div>
+
+        <div class="buy-price-row">
+            <span class="buy-original">¥29</span>
+            <span class="buy-now"><sup>¥</sup>2.9</span>
+        </div>
+        <div class="buy-desc">BUY ONCE · USE FOREVER · 1 DEVICE</div>
+        <p class="buy-note">买断制，一次购买永久使用，后续版本免费更新</p>
+
+        <a href="https://ifdian.net/item/a41c6c2c37d111f1b52d52540025c377"
+           class="btn btn-buy" target="_blank" rel="noopener" style="display:inline-flex;">
+            💳 去爱发电购买激活码
+        </a>
+
+        <div class="buy-steps">
+            <div class="buy-step">① 爱发电付款</div>
+            <div class="buy-step-arrow">→</div>
+            <div class="buy-step">② 获得激活码</div>
+            <div class="buy-step-arrow">→</div>
+            <div class="buy-step">③ 软件内输入</div>
+            <div class="buy-step-arrow">→</div>
+            <div class="buy-step">④ 永久解锁</div>
+        </div>
+    </div>
+
+    <!-- ── FAQ ── -->
+    <div class="faq">
+        <div class="faq-header">常见问题 FAQ</div>
+        <div class="faq-item">
+            <button class="faq-q" onclick="toggleFaq(this)">
+                macOS 提示「无法验证开发者」，是病毒吗？
+                <span class="arrow">▶</span>
+            </button>
+            <div class="faq-a">
+                不是病毒。这是因为 app 没有购买苹果开发者证书（$99/年），macOS 会对所有未签名软件显示此提示。按安装教程：右键→打开→仍要打开，即可正常运行。app 完全本地运行，不收集任何数据。
+            </div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-q" onclick="toggleFaq(this)">
+                一个激活码可以用在几台设备？可以换设备吗？
+                <span class="arrow">▶</span>
+            </button>
+            <div class="faq-a">
+                一个激活码支持 1 台设备激活。若需换设备，请在爱发电私信作者说明情况，可协助处理。
+            </div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-q" onclick="toggleFaq(this)">
+                支持哪些 macOS 版本？
+                <span class="arrow">▶</span>
+            </button>
+            <div class="faq-a">
+                支持 macOS 11 Big Sur 及以上（含 Ventura、Sonoma、Sequoia），Intel 和 Apple Silicon（M 系列）均兼容。
+            </div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-q" onclick="toggleFaq(this)">
+                购买后怎么收到激活码？
+                <span class="arrow">▶</span>
+            </button>
+            <div class="faq-a">
+                在爱发电完成支付后，激活码会显示在订单详情页，同时爱发电会发送通知。打开 SitReminder → 输入激活码 → 点击激活，立即解锁。
+            </div>
+        </div>
+        <div class="faq-item">
+            <button class="faq-q" onclick="toggleFaq(this)">
+                4月30日后价格会涨回¥29吗？
+                <span class="arrow">▶</span>
+            </button>
+            <div class="faq-a">
+                是的，4月30日后恢复原价¥29。现在购买锁定¥2.9，后续版本更新完全免费，和原价用户享受完全相同的功能。
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Footer ── */
+    <div class="footer">
+        <p>© <span id="year"></span> SitReminder · 久坐提醒工具</p>
+        <p>
+            <a href="privacy.html">隐私政策</a>
+            &nbsp;·&nbsp;
+            <a href="https://ifdian.net/item/a41c6c2c37d111f1b52d52540025c377" target="_blank" rel="noopener">爱发电</a>
+            &nbsp;·&nbsp;
+            <a href="https://github.com/zhangcun1113" target="_blank" rel="noopener">GitHub</a>
+        </p>
+        <p style="margin-top:8px;">支持 macOS 菜单栏 · 极简设计，无后台驻留负担</p>
+    </div>
+
+</div>
+
+<script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // 倒计时截止 2026-04-30 23:59:59 北京时间
+    function updateCountdown() {
+        const deadline = new Date('2026-04-30T23:59:59+08:00');
+        const now = new Date();
+        const diff = deadline - now;
+        const els = [document.getElementById('countdown'), document.getElementById('countdown2')];
+        if (diff <= 0) {
+            els.forEach(el => { if (el) el.textContent = '优惠已结束'; });
+            return;
+        }
+        const d = Math.floor(diff / 86400000);
+        const h = Math.floor((diff % 86400000) / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        const str = `${d}天 ${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+        els.forEach(el => { if (el) el.textContent = str; });
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // FAQ
+    function toggleFaq(btn) {
+        const answer = btn.nextElementSibling;
+        const isOpen = btn.classList.contains('open');
+        document.querySelectorAll('.faq-q').forEach(b => {
+            b.classList.remove('open');
+            b.nextElementSibling.classList.remove('show');
         });
-        
-        document.getElementById("winBtn").addEventListener("click", function(e) {
-            e.preventDefault();
-            alert("Windows 版即将发布，敬请期待！\n（替换成真实下载链接后此提示会消失）");
-        });
-        
-        document.getElementById("buyBtn").href = buyUrl;
-        
-        // 如果你已经有了真实的下载链接，可以把上面的 alert 替换成下面这样：
-        /*
-        document.getElementById("macBtn").href = "你的macOS真实下载链接";
-        document.getElementById("winBtn").href = "你的Windows真实下载链接";
-        */
-    </script>
+        if (!isOpen) {
+            btn.classList.add('open');
+            answer.classList.add('show');
+        }
+    }
+</script>
 </body>
 </html>
