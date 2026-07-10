@@ -198,10 +198,8 @@
         .btn:hover::after { bottom: -6px; right: -6px; }
 
         .btn-mac { background: var(--ink); color: #fff; }
-        .btn-win { background: #888; color: #fff; border-color: #888; cursor: default; }
-        .btn-win::after { border-color: #888; }
-        .btn-win:hover { transform: none; }
-        .btn-win:hover::after { bottom: -4px; right: -4px; }
+        .btn-win { background: var(--win); color: #fff; border-color: var(--win); }
+        .btn-win::after { border-color: var(--win); }
 
         .btn-buy {
             background: var(--accent); color: #fff;
@@ -420,7 +418,7 @@
 
     <!-- ── HERO ── -->
     <div class="hero">
-        <div class="stamp">🍎 macOS v1.2.3 &nbsp;·&nbsp; 🪟 Windows 开发中</div>
+        <div class="stamp">🍎 macOS v1.2.3 &nbsp;·&nbsp; 🪟 Windows v1.2.3</div>
         <h1>Sit<span>Reminder</span></h1>
         <div class="tagline">一个小巧的菜单栏久坐提醒工具</div>
         <div class="sub-tagline">不打扰 · 不复杂 · 默默守护你的腰椎</div>
@@ -432,7 +430,8 @@
         <div class="download-row">
             <a href="https://github.com/zhangcun1113/ifdian/raw/main/SitReminder_v1.2.3.dmg"
                class="btn btn-mac">🍎 下载 macOS 版 v1.2.3</a>
-            <a class="btn btn-win">🪟 Windows 开发中...</a>
+            <a href="https://github.com/zhangcun1113/posture-reminder/releases/download/v1.2.3/SitReminder-Windows11-Portable.exe"
+               class="btn btn-win">🪟 下载 Windows 版 · ¥0.9</a>
         </div>
         <div class="download-row">
             <a href="https://ifdian.net/item/a41c6c2c37d111f1b52d52540025c377"
@@ -440,7 +439,7 @@
                 💳 立即购买激活码 · ¥2.9
             </a>
         </div>
-        <p class="hero-note">买断制 · 一次购买永久使用 · 支持 1 台设备</p>
+        <p class="hero-note">macOS 版 ¥2.9 · Windows 版 ¥0.9 · 支持 1 台设备</p>
     </div>
 
     <!-- ── 安装教程 ── -->
